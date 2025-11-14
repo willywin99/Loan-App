@@ -1,117 +1,208 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<title>Loan App - BCAF2025</title>
-	</head>
-	<body>
-		<h1>Loan App - BCAF2025</h1>
-		<section>
-			<h2>Buat Pengajuan</h2>
-			<form id="formCreate">
-				Customer ID: <input name="customerId" value="1" /><br />
-				Vehicle ID: <input name="vehicleId" value="1" /><br />
-				Harga Kendaraan: <input name="hargaKendaraan" value="200000000" /><br />
-				Down Payment: <input name="downPayment" value="20000000" /><br />
-				Tenor (bulan): <input name="tenorBulan" value="24" /><br />
-				Bunga (% per tahun): <input name="bungaPercent" value="6" /><br />
-				<button type="submit">Submit Pengajuan</button>
-			</form>
-			<pre id="resCreate"></pre>
-		</section>
+<head>
+  <meta charset="utf-8" />
+  <title>Loan App - UI (JWT)</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container py-4">
+  <h1 class="mb-4">Loan App - UI (JWT)</h1>
 
-		<section>
-			<h2>Approve / Reject</h2>
-			Application ID: <input id="appId" value="1" /><br />
-			<button id="btnApprove">Approve (approver)</button>
-			<button id="btnReject">Reject (approver)</button>
-			Reason (for reject):
-			<input id="rejectReason" value="Dokumen kurang" /><br />
-			<pre id="resAction"></pre>
-		</section>
+  <div class="card p-3 mb-4">
+    <h4>Login</h4>
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Username</label>
+        <input id="username" class="form-control" value="sales" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Password</label>
+        <input id="password" type="password" class="form-control" value="password" />
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button id="btnLogin" class="btn btn-primary w-100">Login</button>
+      </div>
+    </div>
+    <pre id="loginInfo" class="mt-2"></pre>
+  </div>
 
-		<section>
-			<h2>List Pengajuan</h2>
-			<button id="btnList">Refresh List</button>
-			<pre id="list"></pre>
-		</section>
+  <div class="card p-4 mb-4">
+    <h4>Form Pengajuan Kredit</h4>
 
-		<script>
-			const apiBase = "/api/applications";
+    <form id="formCreate" class="mt-3">
 
-			document
-				.getElementById("formCreate")
-				.addEventListener("submit", async (e) => {
-					e.preventDefault();
-					const form = e.target;
-					const body = {
-						customerId: Number(form.customerId.value),
-						vehicleId: Number(form.vehicleId.value),
-						hargaKendaraan: Number(form.hargaKendaraan.value),
-						downPayment: Number(form.downPayment.value),
-						tenorBulan: Number(form.tenorBulan.value),
-						bungaPercent: Number(form.bungaPercent.value),
-					};
-					const res = await fetch(apiBase, {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: "Basic " + btoa("sales:password"),
-						},
-						body: JSON.stringify(body),
-					});
-					const j = await res.json();
-					document.getElementById("resCreate").innerText = JSON.stringify(
-						j,
-						null,
-						2
-					);
-				});
+      <div class="row g-3">
+        
+        <div class="col-md-4">
+          <label class="form-label">Customer</label>
+          <select class="form-control" name="customerId" id="customerId"></select>
+        </div>
 
-			document
-				.getElementById("btnApprove")
-				.addEventListener("click", async () => {
-					const id = document.getElementById("appId").value;
-					const res = await fetch(apiBase + "/" + id + "/approve", {
-						method: "POST",
-						headers: { Authorization: "Basic " + btoa("approver:password") },
-					});
-					const j = await res.json();
-					document.getElementById("resAction").innerText = JSON.stringify(
-						j,
-						null,
-						2
-					);
-				});
+        <div class="col-md-4">
+          <label class="form-label">Kendaraan</label>
+          <select class="form-control" name="vehicleId" id="vehicleId"></select>
+        </div>
 
-			document
-				.getElementById("btnReject")
-				.addEventListener("click", async () => {
-					const id = document.getElementById("appId").value;
-					const reason = document.getElementById("rejectReason").value;
-					const res = await fetch(apiBase + "/" + id + "/reject", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: "Basic " + btoa("approver:password"),
-						},
-						body: JSON.stringify({ reason }),
-					});
-					const j = await res.json();
-					document.getElementById("resAction").innerText = JSON.stringify(
-						j,
-						null,
-						2
-					);
-				});
+        <div class="col-md-4">
+          <label class="form-label">Harga Kendaraan</label>
+          <input type="number" class="form-control" name="hargaKendaraan" id="hargaKendaraan" placeholder="200000000">
+        </div>
 
-			document.getElementById("btnList").addEventListener("click", async () => {
-				const res = await fetch(apiBase, {
-					headers: { Authorization: "Basic " + btoa("sales:password") },
-				});
-				const j = await res.json();
-				document.getElementById("list").innerText = JSON.stringify(j, null, 2);
-			});
-		</script>
-	</body>
+        <div class="col-md-4">
+          <label class="form-label">Down Payment</label>
+          <input type="number" class="form-control" name="downPayment" placeholder="20000000">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Tenor (bulan)</label>
+          <input type="number" class="form-control" name="tenorBulan" placeholder="24">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Bunga (%)</label>
+          <input type="number" class="form-control" name="bungaPercent" placeholder="6">
+        </div>
+
+      </div>
+
+      <button class="btn btn-primary mt-3">Submit Pengajuan</button>
+    </form>
+
+    <pre id="resCreate" class="mt-2"></pre>
+  </div>
+
+  <div class="card p-3 mb-4">
+    <h4>Approve / Reject</h4>
+
+    <label class="form-label">Application ID</label>
+    <input id="appId" class="form-control mb-2" style="width:150px" value="1">
+
+    <label class="form-label">Reason (for Reject)</label>
+    <input id="reason" class="form-control mb-3" style="width:300px" value="Dokumen kurang">
+
+    <button id="appr" class="btn btn-success me-2">Approve</button>
+    <button id="rej" class="btn btn-danger">Reject</button>
+
+    <pre id="resAction" class="mt-2"></pre>
+  </div>
+
+  <div class="card p-3">
+    <h4>List Aplikasi</h4>
+    <button id="btnList" class="btn btn-info mb-2">Refresh</button>
+    <pre id="list"></pre>
+  </div>
+
+<script>
+function saveToken(t){ localStorage.setItem('token', t); }
+function getToken(){ return localStorage.getItem('token'); }
+function clearToken(){ localStorage.removeItem('token'); }
+
+async function loadDropdowns(){
+  const token = getToken();
+  if(!token) return;
+  try {
+    const cust = await fetch('/api/customers', { headers: {'Authorization': 'Bearer ' + token} });
+    if (cust.ok) {
+      const cjson = await cust.json();
+      customerId.innerHTML = cjson.map(c => `<option value="${c.id}">${c.nama} - ${c.ktp}</option>`).join("");
+    } else {
+      console.error('Failed loading customers', cust.status);
+    }
+  } catch(e){ console.error(e); }
+
+  try {
+    const veh = await fetch('/api/vehicles', { headers: {'Authorization': 'Bearer ' + token} });
+    if (veh.ok) {
+      const vjson = await veh.json();
+      window._vehicleList = vjson;
+      vehicleId.innerHTML = vjson.map(v => `<option value="${v.id}">${v.merk} ${v.model} - ${v.warna}</option>`).join("");
+      if (vjson.length > 0) {
+        document.getElementById('hargaKendaraan').value = vjson[0].harga;
+      }
+    } else {
+      console.error('Failed loading vehicles', veh.status);
+    }
+  } catch(e){ console.error(e); }
+}
+
+document.getElementById('btnLogin').onclick = async ()=>{
+  const user = username.value;
+  const pass = password.value;
+  const res = await fetch('/auth/login', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({username: user, password: pass})
+  });
+  const j = await res.json();
+  if (j.token) {
+    saveToken(j.token);
+    loginInfo.innerText = 'Logged in as ' + user;
+    await loadDropdowns();
+  } else {
+    loginInfo.innerText = JSON.stringify(j);
+  }
+};
+
+window.addEventListener('load', ()=>{
+  if (getToken()) {
+    loginInfo.innerText = 'Already logged in';
+    loadDropdowns();
+  }
+});
+
+// auto-update harga when vehicle selected
+document.getElementById('vehicleId').addEventListener('change', ()=>{
+  const selected = window._vehicleList.find(v => v.id == document.getElementById('vehicleId').value);
+  if (selected) {
+    document.getElementById('hargaKendaraan').value = selected.harga;
+  }
+});
+
+document.getElementById('formCreate').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const f=e.target;
+  const token = getToken();
+  const body={
+    customerId:Number(f.customerId.value),
+    vehicleId:Number(f.vehicleId.value),
+    hargaKendaraan:Number(f.hargaKendaraan.value),
+    downPayment:Number(f.downPayment.value),
+    tenorBulan:Number(f.tenorBulan.value),
+    bungaPercent:Number(f.bungaPercent.value)
+  };
+  const res = await fetch('/api/applications', {
+    method:'POST',
+    headers:{'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+    body: JSON.stringify(body)
+  });
+  resCreate.innerText = JSON.stringify(await res.json(), null, 2);
+});
+
+appr.onclick = async ()=>{
+  const token = getToken();
+  const id = appId.value;
+  const res = await fetch('/api/applications/' + id + '/approve', {method:'POST', headers: {'Authorization':'Bearer '+token}});
+  resAction.innerText = JSON.stringify(await res.json(), null, 2);
+};
+
+rej.onclick = async ()=>{
+  const token = getToken();
+  const id = appId.value;
+  const reason = document.getElementById('reason').value;
+  const res = await fetch('/api/applications/' + id + '/reject', {
+    method:'POST',
+    headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+    body: JSON.stringify({reason})
+  });
+  resAction.innerText = JSON.stringify(await res.json(), null, 2);
+};
+
+btnList.onclick = async ()=>{
+  const token = getToken();
+  const res = await fetch('/api/applications', {headers: {'Authorization':'Bearer '+token}});
+  list.innerText = JSON.stringify(await res.json(), null, 2);
+};
+</script>
+
+</body>
 </html>
