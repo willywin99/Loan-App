@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Loan App - BCAF2025</title>
+	</head>
+	<body>
+		<h1>Loan App - BCAF2025</h1>
+		<section>
+			<h2>Buat Pengajuan</h2>
+			<form id="formCreate">
+				Customer ID: <input name="customerId" value="1" /><br />
+				Vehicle ID: <input name="vehicleId" value="1" /><br />
+				Harga Kendaraan: <input name="hargaKendaraan" value="200000000" /><br />
+				Down Payment: <input name="downPayment" value="20000000" /><br />
+				Tenor (bulan): <input name="tenorBulan" value="24" /><br />
+				Bunga (% per tahun): <input name="bungaPercent" value="6" /><br />
+				<button type="submit">Submit Pengajuan</button>
+			</form>
+			<pre id="resCreate"></pre>
+		</section>
+
+		<section>
+			<h2>Approve / Reject</h2>
+			Application ID: <input id="appId" value="1" /><br />
+			<button id="btnApprove">Approve (approver)</button>
+			<button id="btnReject">Reject (approver)</button>
+			Reason (for reject):
+			<input id="rejectReason" value="Dokumen kurang" /><br />
+			<pre id="resAction"></pre>
+		</section>
+
+		<section>
+			<h2>List Pengajuan</h2>
+			<button id="btnList">Refresh List</button>
+			<pre id="list"></pre>
+		</section>
+
+		<script>
+			const apiBase = "/api/applications";
+
+			document
+				.getElementById("formCreate")
+				.addEventListener("submit", async (e) => {
+					e.preventDefault();
+					const form = e.target;
+					const body = {
+						customerId: Number(form.customerId.value),
+						vehicleId: Number(form.vehicleId.value),
+						hargaKendaraan: Number(form.hargaKendaraan.value),
+						downPayment: Number(form.downPayment.value),
+						tenorBulan: Number(form.tenorBulan.value),
+						bungaPercent: Number(form.bungaPercent.value),
+					};
+					const res = await fetch(apiBase, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: "Basic " + btoa("sales:password"),
+						},
+						body: JSON.stringify(body),
+					});
+					const j = await res.json();
+					document.getElementById("resCreate").innerText = JSON.stringify(
+						j,
+						null,
+						2
+					);
+				});
+
+			document
+				.getElementById("btnApprove")
+				.addEventListener("click", async () => {
+					const id = document.getElementById("appId").value;
+					const res = await fetch(apiBase + "/" + id + "/approve", {
+						method: "POST",
+						headers: { Authorization: "Basic " + btoa("approver:password") },
+					});
+					const j = await res.json();
+					document.getElementById("resAction").innerText = JSON.stringify(
+						j,
+						null,
+						2
+					);
+				});
+
+			document
+				.getElementById("btnReject")
+				.addEventListener("click", async () => {
+					const id = document.getElementById("appId").value;
+					const reason = document.getElementById("rejectReason").value;
+					const res = await fetch(apiBase + "/" + id + "/reject", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: "Basic " + btoa("approver:password"),
+						},
+						body: JSON.stringify({ reason }),
+					});
+					const j = await res.json();
+					document.getElementById("resAction").innerText = JSON.stringify(
+						j,
+						null,
+						2
+					);
+				});
+
+			document.getElementById("btnList").addEventListener("click", async () => {
+				const res = await fetch(apiBase, {
+					headers: { Authorization: "Basic " + btoa("sales:password") },
+				});
+				const j = await res.json();
+				document.getElementById("list").innerText = JSON.stringify(j, null, 2);
+			});
+		</script>
+	</body>
+</html>
