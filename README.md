@@ -86,12 +86,20 @@ ERD
 
     APPLICATION {
         int id PK
+        decimal angsuran_per_bulan
+        string approved_by
+        datetime approved_date
+        decimal bunga_percent
+        string created_by
+        datetime created_date
+        decimal down_payment
+        decimal harga_kendaraan
+        text notes
+        enum status (submitted, approved, rejected)
+        int tenor_bulan
+        decimal total_pinjaman
         int customer_id FK
         int vehicle_id FK
-        int tenor_bulan
-        decimal harga_kendaraan
-        decimal down_payment
-        datetime created_at
     }
 
     CUSTOMER ||--o{ APPLICATION : "mengajukan"
@@ -152,7 +160,7 @@ MySQL:
 
 ```
 host: localhost
-port: 3307
+port: 3306
 db: loanapp
 user: root
 pass: root
@@ -165,7 +173,7 @@ pass: root
 `application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3307/loanapp
+spring.datasource.url=jdbc:mysql://localhost:3306/loanapp
 spring.datasource.username=root
 spring.datasource.password=root
 spring.jpa.hibernate.ddl-auto=update
@@ -249,6 +257,7 @@ hargaKendaraan.value = selectedVehicle.harga;
 - Dashboard Admin
 - React/Vue frontend
 - Notifikasi WA/SMS
+- dan lain sebagainya...
 
 ---
 
