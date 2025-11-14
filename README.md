@@ -42,18 +42,34 @@ http://localhost:8080/swagger-ui/index.html
 
 ```mermaid
 flowchart LR
-    A[Browser UI (HTML + JS)] -- JWT Login --> B[Spring Boot AuthController]
-    A -- Fetch Customers --> C[CustomerController]
-    A -- Fetch Vehicles --> D[VehicleController]
-    A -- Submit Loan --> E[ApplicationController]
+    A[Browser UI<br/>HTML + JS]
+
+    subgraph Spring Boot Controllers
+        B[AuthController]
+        C[CustomerController]
+        D[VehicleController]
+        E[ApplicationController]
+    end
+
+    subgraph Security
+        G[JwtAuthFilter]
+    end
+
+    subgraph Database
+        F[(MySQL)]
+    end
+
+    A -- JWT Login --> B
+    A -- Fetch Customers --> C
+    A -- Fetch Vehicles --> D
+    A -- Submit Loan --> E
 
     B -- Generate Token --> A
 
-    C --> F[(MySQL)]
+    C --> F
     D --> F
     E --> F
 
-    B --> G[JwtAuthFilter]
     C --> G
     D --> G
     E --> G
