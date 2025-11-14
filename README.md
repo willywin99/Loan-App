@@ -66,7 +66,7 @@ flowchart LR
 # 🗃️ ERD (Entity Relationship Diagram)
 
 ```mermaid
-ERD
+erDiagram
     CUSTOMER {
         int id PK
         string alamat
@@ -95,7 +95,7 @@ ERD
         decimal down_payment
         decimal harga_kendaraan
         text notes
-        enum status (submitted, approved, rejected)
+        string status
         int tenor_bulan
         decimal total_pinjaman
         int customer_id FK
@@ -103,7 +103,7 @@ ERD
     }
 
     CUSTOMER ||--o{ APPLICATION : "mengajukan"
-    VEHICLE  ||--o{ APPLICATION : "dipilih"
+    VEHICLE ||--o{ APPLICATION : "dipilih"
 ```
 
 ---
